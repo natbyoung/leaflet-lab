@@ -1,30 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="eng">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
-		<title>Nat The Cat</title>
+		<title>Exquisite Data</title>
 
 		<!--put your external stylesheet links here-->
 		<link rel="stylesheet" href="css/style.css">
-		<link rel="stylesheet" href="lib/leaflet/leaflet.css">
-		<!--[if IE<9]>
-			<link rel="stylesheet" href="css/style.ie.css">
-		<![endif]-->
+        <link rel='stylesheet' type="text/css" href="lib/leaflet.css">
+        <link rel='stylesheet' type="text/css" href="lib/MarkerCluster.css">
+        <link rel='stylesheet' type="text/css" href="lib/MarkerCluster.Default.css">
+		<link rel="stylesheet" href="css/style.css">
 	</head>
 
 	<body>
-		<!--put your initial page content here-->
-			
-		<!--you can also use this space for internal scripts or stylesheets;
-		place these within <script> or <style> tags-->
+		<!-- Initial Page Content -->
+        <h1>Shifting Identity: Multi-Racial Population Concentrations</h1>
+        <div id="mydiv"></div>
+        <div id="initialize"></div>
+        
+        <div id='map'></div>
+		
+        <nav class='menu-ui'>
+          <a href='#' class='active' data-filter='all'>Show all</a>
+          <a href='#' data-filter='big'>Above 30K</a>
+          <a href='#' data-filter='medium'>10K-30K</a>
+          <a href='#' data-filter='small'>Below 10K</a>
+        </nav>
+        <div id='legend'> 
+            <svg id="Layer_1" width="180px" height="200px">
+                <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="120" r="58"/>
+                <text x="160" y="155">4%</text>
+                <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="129.5" r="48.5"/>
+                <text x="160" y="120">7%</text>
+                <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="141.3" r="36.7"/>
+                <text x="150" y="85">10%</text>
+                <text id='legendTitle' x="35" y="35">Percentage in 2010</text>
+            </svg>
+        </div>
+        <div id="panel"></div>
+        <div id="panel3">
+            <h2>Intercultural Identity:</h2>
+            <p class="explain">
+                As more cultures meet and intermingle in the "Great American Melting Pot," it stands to reason that more Americans will identify as multi-racial. This map explores that idea, showing city population percentages of those that identify as multi-racial year over year from 2010 and 2016.<br><br>Information shown may also be filtered by total multi-racial population in each city via the filter in the top right of the map. The user may also track a specific city by clicking it and tracking its data in the panel above.
+            </p>
+        </div>
+        <div id="panel2"></div>
+        
 
-		<!--put your external script links here-->
-		Hello there
-		<script type="text/javascript" src="lib/leaflet/leaflet-src.js"></script>
-		<!--add jquery here-->
-		<script type="text/javascript" src="lib/leaflet/leaflet-src.js"></script>
+		<!-- External javascript links, followed by main.js -->
+        <script type="text/javascript" src="lib/jquery-3.6.0.js"></script>
+        <script type="text/javascript" src="lib/leaflet.js"></script>
+        <script type="text/javascript" src="lib/leaflet.markercluster.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
-
+		
 	</body>
 </html>
