@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+
+<!-- By Natalie Young, 2022
+I heavily relied on the code and example of github user adp6729, lab link: https://adp6729.github.io/leaflet-lab/# (thank you!)
+This file is based on adp6729's html file, but updated with my own content-->
+
 <html lang="eng">
 	<head>
 		<meta charset="utf-8">
@@ -7,14 +12,12 @@
 
 		<!--put your external stylesheet links here-->
         <link rel='stylesheet' type="text/css" href="lib/leaflet/leaflet.css">
-        <!--<link rel='stylesheet' type="text/css" href="lib/MarkerCluster.css">-->
-        <!--<link rel='stylesheet' type="text/css" href="lib/MarkerCluster.Default.css">-->
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 
 	<body>
 		<!-- Initial Page Content -->
-        <h1>Shifting Identity: Multi-Racial Population Concentrations</h1>
+        <h1>Washington City Populations 1970-2020</h1>
         <div id="mydiv"></div>
         <div id="initialize"></div>
         
@@ -22,36 +25,51 @@
 		
         <nav class='menu-ui'>
           <a href='#' class='active' data-filter='all'>Show all</a>
-          <a href='#' data-filter='big'>Above 30K</a>
-          <a href='#' data-filter='medium'>10K-30K</a>
-          <a href='#' data-filter='small'>Below 10K</a>
+          <a href='#' data-filter='big'>100k or More</a>
+          <a href='#' data-filter='medium'>75k-99k</a>
+          <a href='#' data-filter='small'>Less than 75k</a>
         </nav>
+		
         <div id='legend'> 
-            <svg id="Layer_1" width="180px" height="200px">
+            <svg id="Layer_1" width="200px" height="200px">
                 <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="120" r="58"/>
-                <text x="160" y="155">4%</text>
+                <text x="160" y="155">200k</text>
                 <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="129.5" r="48.5"/>
-                <text x="160" y="120">7%</text>
+                <text x="160" y="120">300k</text>
                 <circle fill="#46d606" fill-opacity="0.6" stroke="#000000" cx="80" cy="141.3" r="36.7"/>
-                <text x="150" y="85">10%</text>
-                <text id='legendTitle' x="35" y="35">Percentage in 2010</text>
+                <text x="150" y="85">500k</text>
+                <text id='legendTitle' x="35" y="35">Population in 1970</text>
             </svg>
         </div>
+		
         <div id="panel"></div>
+		
         <div id="panel3">
-            <h2>Intercultural Identity:</h2>
+            <h2>Explore Population Changes:</h2>
             <p class="explain">
-                As more cultures meet and intermingle in the "Great American Melting Pot," it stands to reason that more Americans will identify as multi-racial. This map explores that idea, showing city population percentages of those that identify as multi-racial year over year from 2010 and 2016.<br><br>Information shown may also be filtered by total multi-racial population in each city via the filter in the top right of the map. The user may also track a specific city by clicking it and tracking its data in the panel above.
+                Total population from 1970 to 2020 is mapped for all cities in Washington with populations of at least 50,000 in 2020. Select the year using the slider.<br>
+				<br>The mapped cities can be adjusted using the filter menu of specific total population ranges. View additional information in the panel above by clicking a city.
             </p>
         </div>
+		
         <div id="panel2"></div>
+		
+		<div id="panel4">
+		Data Source: IPUMS NHGIS, University of Minnesota, <a href="https://www.nhgis.org">www.nhgis.org</a> (Time Series Table AVO).<br>
+		All original source datasets of table AVO are from the U.S. Census Bureau.<br>
+		</br>
+		Data Notes: Data are decennial census data with the exception of year 2019, which represents 2015-2019 American Community Survey Data.<br>
+		Some places did not exist in the earlier years of this dataset. The population for these places and years has been set to zero (original data is null).<br>
+		Geographic Integration: Nominally integrated tables. Geographic units are linked across time according to their names and codes, disregarding any changes in unit boundaries.<br>
+		</div>
         
 
 		<!-- External javascript links, followed by main.js -->
         <script type="text/javascript" src="lib/jquery-3.6.0.js"></script>
         <script type="text/javascript" src="lib/leaflet/leaflet.js"></script>
-        <!--<script type="text/javascript" src="lib/leaflet.markercluster.js"></script>-->
 		<script type="text/javascript" src="js/main.js"></script>
 		
 	</body>
 </html>
+
+

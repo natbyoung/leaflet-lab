@@ -1,6 +1,6 @@
-/* Natalie Young, 2022 */
-
-/* My stylesheet is borrowed from Andrew Pittman, 2018 with a few changes */
+/* By Natalie Young, 2022
+I heavily relied on the code and example of github user adp6729, lab link: https://adp6729.github.io/leaflet-lab/# (thank you!)
+I have made limited adjustments to this file*/
 
 /*Example maps from leaflet.org*/
 #mapid { height: 500px }
@@ -9,23 +9,23 @@
 /* Map */
 #map { 
     height: 650px;
-    width: 80%;
+    width: 78%;
     display: inline-block;
     z-index: 1;
 }
 
 /* Info Panel */
 #panel {
-    width: 16%;
+    width: 18%;
     padding: 20px;
     display: inline-block;
     vertical-align: top;
     text-align: center;
 }
 
-/* Info Panel */
+/* Simple Map Description/Instructions Panel */
 #panel3 {
-    width: 17%;
+    width: 18%;
     padding: 10px;
     position:absolute;
     top:250px;right:10px;

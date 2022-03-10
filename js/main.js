@@ -1,6 +1,8 @@
-/* By Natalie Young, 2022 */
+/* By Natalie Young, 2022
+I heavily relied on the code and example of github user adp6729, lab link: https://adp6729.github.io/leaflet-lab/# (thank you!)
+However, I have updated every major element on the page with my own data or settings and removed several inapplicable code lines*/
 
-// GOAL: Proportional symbols representing attribute values of mapped features
+// GOAL: Spatiotemporal proportional point symbol map
 
 var currentMap = 0 // Global variable to hold the leaflet map object
 
@@ -9,8 +11,8 @@ function createMap(){
     
     // Create the map
     var map = L.map('map', {
-        center: [47, -113],
-        zoom: 4
+        center: [47.2, -121.7],
+        zoom: 7
     })
 
     // Add OSM base tilelayer
@@ -26,29 +28,33 @@ function createMap(){
 }
 
 // Initialize global variables for use later
-var currentLayer = 0 // holds geoJsonLayer for future modifications
-var currentAttributes = 0 // Percentage attribute names
-var currentAttributes2 = 0 // Population attribute names
-var currentFilter = 'all' // current Filter selection, initially 'all'
-var rawJson = 0 // holds ajax response, aka raw json data
-var featureSelected = 0 // holds the currently selected city information
-var currentAttribute = 0 // holds the currently selected Percentage attribute name
-var currentAttribute2 = 0 // holds the currently selected Population attribute name
+var currentLayer = 0 		// holds geoJsonLayer for future modifications
+var currentAttributes = 0 	// Percentage attribute names
+var currentAttributes2 = 0 	// Population attribute names
+var currentFilter = 'all' 	// current Filter selection, initially 'all'
+var rawJson = 0 			// holds ajax response, aka raw json data
+var featureSelected = 0 	// holds the currently selected city information
+var currentAttribute = 0 	// holds the currently selected Percentage attribute name
+var currentAttribute2 = 0 	// holds the currently selected Population attribute name
 
 // Function to retrieve the data via ajax and place it on the map
 function getData(map){
     
     // Load the data
-    $.ajax("data/MultiRacial.geojson", {
+    $.ajax("data/WAcities50k.geojson", {
         dataType: "json",
         success: function(response){
             // Set global rawJson to ajax response
             rawJson = response
             
-            // Process rawJson/response into lists of data sets- Percentage and Population
+            // Process rawJson/response into lists of data sets- population values, and population CHANGE values
             var processedAttributes = processData(response)
             currentAttributes = processedAttributes[0]
             currentAttributes2 = processedAttributes[1]
+			
+			//uncomment these to check contents of currentAttribues, currentAttributes2
+			//console.log("currentAttributes are " + currentAttributes);
+			//console.log("currentAttributes2 are " + currentAttributes2);
             
             // Call function to create proportional symbols, put in a layer
             geoJsonLayer = createPropSymbols(response, map, 0, currentFilter)
@@ -57,15 +63,9 @@ function getData(map){
             // Call function to create sequence controls for user
             createSequenceControls(map, currentAttributes)
             
-            // Function to create marker cluster groups, not in use at this time
-            //create a L.markerClusterGroup layer
-            //add geojson to marker cluster layer, add to map
-//            var markers = L.markerClusterGroup()
-//            markers.addLayer(geoJsonLayer)
-//            map.addLayer(markers)
-            
             //add geo JSON layer to map
             map.addLayer(geoJsonLayer)
+			//console.log("your geojson was added to the map");
         }
     })
 }
@@ -81,13 +81,15 @@ function processData(data){
 
     // Push each attribute name into attributes array
     for (var attribute in properties){
-        //catalog attributes with percentage values
-        if (attribute.indexOf("Perc") > -1){
-            attributes.push(attribute)
-        }
         //catalog attributes with population values
-        if (attribute.indexOf("Pop") > -1){
+        if (attribute.indexOf("totpop") > -1){
+            attributes.push(attribute)
+			//console.log(attribute);
+        }
+        //catalog attributes with population CHANGE values
+        if (attribute.indexOf("chg") > -1){
             attributes2.push(attribute)
+			//console.log(attribute);
         }
     }
 
@@ -104,7 +106,7 @@ function createPropSymbols(data, map, idx, filterStr) {
     
     // Create marker options
     var geojsonMarkerOptions = {
-        radius: 8,
+        radius: 2,
         fillColor: "#46d606",
         color: "#000",
         weight: 1,
@@ -118,9 +120,10 @@ function createPropSymbols(data, map, idx, filterStr) {
             // For each feature, determine its value for the selected attribute
             var attValue = Number(feature.properties[attribute])
             
+			/*
             // Test for variable type, then give each feature's circle marker a radius based on its attribute value 
             // This code was written in hopes of adding a switch to flip to population as the main variable on the map
-            var strTest = attribute.search("Pop")
+            var strTest = attribute.search("totpop")
             if (strTest > -1) {
                 geojsonMarkerOptions.radius = calcPropRadius(attValue, 0.1)
                 details = ["Population", ""]
@@ -129,16 +132,19 @@ function createPropSymbols(data, map, idx, filterStr) {
                 geojsonMarkerOptions.radius = calcPropRadius(attValue, 900)
                 details = ["Percentage", "%"]                
                 details2 = ["Population", ""]
-            }
+            }*/
             
+			//Adjust circle marker radius based on attribute value
+			geojsonMarkerOptions.radius = calcPropRadius(attValue, .02)
+			
             // Create circle marker layer
             var layer = L.circleMarker(latlng, geojsonMarkerOptions)
             
             // Build popup content string
-            var popupContent = "<p><b>City:</b> " + feature.properties.CityState + "</p>"
+            var popupContent = "<p><b>" + feature.properties.placename + ", WA" + "</p>"
             var year = attribute.slice(-4)
-            popupContent += "<p><b>" + details[0] + " in " + year + ":</b> " + feature.properties[attribute] + details[1] + "</p>"
-            popupContent2 = popupContent + "<p><b>" + details2[0] + " in " + year + ":</b> " + feature.properties[currentAttribute2] + details2[1] + "</p>"
+            popupContent += "<p><b>" + "Population in " + year + ":</b> " + feature.properties[attribute] + "</p>"
+            //popupContent2 = popupContent + "<p><b>" + details2[0] + " in " + year + ":</b> " + feature.properties[currentAttribute2] + details2[1] + "</p>"
 
             // Bind the popup to the circle marker
             layer.bindPopup(popupContent, {
@@ -157,7 +163,7 @@ function createPropSymbols(data, map, idx, filterStr) {
                 },
                 click: function(){
                     featureSelected = feature
-                    updatePanel(currentAttribute, details, details2)
+                    updatePanel(currentAttribute)
                 }
             })
 
@@ -170,15 +176,15 @@ function createPropSymbols(data, map, idx, filterStr) {
             if (filterStr === 'all'){
                 returnBool = true
             } else if (filterStr === 'big'){
-                if (feature.properties[currentAttribute2] > 30000) {
+                if (feature.properties[currentAttribute] >= 100000) {
                     returnBool = true
                 }
             } else if (filterStr === 'medium'){
-                if ((feature.properties[currentAttribute2] <= 30000) && (feature.properties[currentAttribute2] > 10000)) {
+                if ((feature.properties[currentAttribute] < 100000) && (feature.properties[currentAttribute] >= 75000)) {
                     returnBool = true
                 }
             } else if (filterStr === 'small'){
-                if ((feature.properties[currentAttribute2] <= 10000)) {
+                if ((feature.properties[currentAttribute] < 75000)) {
                     returnBool = true
                 }
             } 
@@ -257,7 +263,7 @@ function createSequenceControls(map, attributes){
         updatePanel()
         
         // Update legend title with new year
-        $('#legendTitle').text("Percentage in " + currentAttribute.slice(-4))
+        $('#legendTitle').text("Population in " + currentAttribute.slice(-4))
     })
 
     // Input listener for slider
@@ -277,15 +283,18 @@ function createSequenceControls(map, attributes){
         updatePanel()
         
         // Update legend title with new year
-        $('#legendTitle').text("Percentage in " + currentAttribute.slice(-4))
+        $('#legendTitle').text("Population in " + currentAttribute.slice(-4))
     })
 }
 
 // Function to update the information panel on the right
 function updatePanel() {
     if (featureSelected != 0) {
-        // Determine the nature of the main variable
-        var strTest = currentAttribute.search("Pop")
+        
+		
+		/*
+		// Determine the nature of the main variable
+        var strTest = currentAttribute.search("totpop")
         if (strTest > -1) {
             details = ["Population", ""]
             details2 = ["Percentage", "%"]
@@ -293,12 +302,13 @@ function updatePanel() {
             details = ["Percentage", "%"]
             details2 = ["Population", ""]
         }
+		*/
 
         // Utilize current feature, currentAttributes to create popup content
-        var popupContent = "<p><b>City:</b> " + featureSelected.properties.CityState + "</p>"
+        var popupContent = "<p><b>" + featureSelected.properties.placename + "</b>" + ", WA" + "</p>"
         var year = currentAttribute.slice(-4)
-        popupContent += "<p><b>" + details[0] + " in " + year + ":</b> " + featureSelected.properties[currentAttribute] + details[1] + "</p>"
-        popupContent += "<p><b>" + details2[0] + " in " + year + ":</b> " + featureSelected.properties[currentAttribute2] + details2[1] + "</p>"
+        popupContent += "<p><b>" + "Population in " + year + ": </b>" + featureSelected.properties[currentAttribute] + "</p>"
+		popupContent += "<p><b>" + "Population Change 1970 to 2020: " + "</b>" + featureSelected.properties.chg_1970_to_2020 + " (" + featureSelected.properties.chgp_1970_2020 + "%)" + "</p>"
 
         // Update panel with new popup content
         $("#panel").html(popupContent)
