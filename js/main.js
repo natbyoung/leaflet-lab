@@ -11,7 +11,7 @@ function createMap(){
     
     // Create the map
     var map = L.map('map', {
-        center: [47.2, -121.7],
+        center: [47.25, -121.7],
         zoom: 7
     })
 
@@ -305,7 +305,7 @@ function updatePanel() {
 		*/
 
         // Utilize current feature, currentAttributes to create popup content
-        var popupContent = "<p><b>" + featureSelected.properties.placename + "</b>" + ", WA" + "</p>"
+        var popupContent = "<h3><p><b>" + featureSelected.properties.placename + "</b>" + ", WA" + "</p></h3>"
         var year = currentAttribute.slice(-4)
         popupContent += "<p><b>" + "Population in " + year + ": </b>" + featureSelected.properties[currentAttribute] + "</p>"
 		popupContent += "<p><b>" + "Population Change 1970 to 2020: " + "</b>" + featureSelected.properties.chg_1970_to_2020 + " (" + featureSelected.properties.chgp_1970_2020 + "%)" + "</p>"
